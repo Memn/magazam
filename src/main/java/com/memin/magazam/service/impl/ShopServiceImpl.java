@@ -1,19 +1,22 @@
 package com.memin.magazam.service.impl;
 
+import com.memin.magazam.service.ShopService;
 import com.memin.magazam.domain.Shop;
 import com.memin.magazam.repository.ShopRepository;
 import com.memin.magazam.repository.search.ShopSearchRepository;
-import com.memin.magazam.service.ShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Shop.
@@ -39,7 +42,7 @@ public class ShopServiceImpl implements ShopService{
     public Shop save(Shop shop) {
         log.debug("Request to save Shop : {}", shop);
         Shop result = shopRepository.save(shop);
-//        shopSearchRepository.save(result);
+        shopSearchRepository.save(result);
         return result;
     }
 
@@ -77,7 +80,7 @@ public class ShopServiceImpl implements ShopService{
     public void delete(Long id) {
         log.debug("Request to delete Shop : {}", id);
         shopRepository.delete(id);
-//        shopSearchRepository.delete(id);
+        shopSearchRepository.delete(id);
     }
 
     /**
