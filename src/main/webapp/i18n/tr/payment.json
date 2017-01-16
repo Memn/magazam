@@ -19,7 +19,7 @@
             "date": "Date",
             "amount": "Amount",
             "paymentType": "Payment Type",
-            "customer": "Customer"
+            "Müşteri": "Müşteri"
         }
     }
 }

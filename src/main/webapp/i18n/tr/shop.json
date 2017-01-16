@@ -1,27 +1,27 @@
 {
     "magazamApp": {
-        "shop" : {
+        "Mağaza" : {
             "home": {
-                "title": "Shops",
-                "createLabel": "Create a new Shop",
-                "createOrEditLabel": "Create or edit a Shop",
-                "search": "Search for Shop"
+                "title": "Mağazalar",
+                "createLabel": "Create a new Mağaza",
+                "createOrEditLabel": "Create or edit a Mağaza",
+                "search": "Search for Mağaza"
             },
-            "created": "A new Shop is created with identifier {{ param }}",
-            "updated": "A Shop is updated with identifier {{ param }}",
-            "deleted": "A Shop is deleted with identifier {{ param }}",
+            "created": "A new Mağaza is created with identifier {{ param }}",
+            "updated": "A Mağaza is updated with identifier {{ param }}",
+            "deleted": "A Mağaza is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Shop {{ id }}?"
+                "question": "Are you sure you want to delete Mağaza {{ id }}?"
             },
             "detail": {
-                "title": "Shop"
+                "title": "Mağaza"
             },
-            "name": "Name",
-            "address": "Address",
-            "phoneNumber": "Phone Number",
-            "customer": "Customer",
-            "sale": "Sale",
-            "user": "User"
+            "name": "Adı",
+            "address": "Adresi",
+            "phoneNumber": "Telefon Numarası",
+            "Müşteri": "Müşteri",
+            "sale": "Satış",
+            "user": "Kullanıcı"
         }
     }
 }

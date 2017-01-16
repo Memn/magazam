@@ -18,8 +18,8 @@
             },
             "date": "Date",
             "amount": "Amount",
-            "customer": "Customer",
-            "shop": "Shop"
+            "Müşteri": "Müşteri",
+            "Mağaza": "Mağaza"
         }
     }
 }
