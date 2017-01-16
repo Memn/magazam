@@ -61,6 +61,10 @@
     "node": "^4.3"
   },
   "scripts": {
-    "test" : "gulp test"
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "bower": "^1.7.9",
+    "grunt-cli": "^1.2.0"
   }
 }
