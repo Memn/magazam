@@ -55,11 +55,13 @@
     "phantomjs-prebuilt": "2.1.12",
     "proxy-middleware": "0.15.0",
     "run-sequence": "1.2.2",
-
     "yargs": "5.0.0"
   },
   "engines": {
     "node": "^4.3"
+  },
+  "dependencies": {
+    "bower": "1.7.9"
   },
   "scripts": {
     "test": "gulp test",
