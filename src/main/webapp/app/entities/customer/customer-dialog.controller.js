@@ -5,9 +5,9 @@
         .module('magazamApp')
         .controller('CustomerDialogController', CustomerDialogController);
 
-    CustomerDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Customer', 'Shop', 'Sale', 'Payment'];
+    CustomerDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Customer', 'Sale', 'Payment', 'Shop'];
 
-    function CustomerDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Customer, Shop, Sale, Payment) {
+    function CustomerDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Customer, Sale, Payment, Shop) {
         var vm = this;
 
         vm.customer = entity;
@@ -15,9 +15,9 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
-        vm.shops = Shop.query();
         vm.sales = Sale.query();
         vm.payments = Payment.query();
+        vm.shops = Shop.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

@@ -2,13 +2,6 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "customer",
-            "otherEntityName": "customer",
-            "relationshipType": "many-to-many",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "shop"
-        },
-        {
             "relationshipName": "sale",
             "otherEntityName": "sale",
             "relationshipType": "one-to-many",
@@ -23,6 +16,12 @@
             ],
             "otherEntityField": "login",
             "ownerSide": true
+        },
+        {
+            "relationshipName": "customer",
+            "otherEntityName": "customer",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "shop"
         }
     ],
     "fields": [

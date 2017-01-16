@@ -8,16 +8,11 @@
     -->
     <changeSet id="20170116140312-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="customers_id"
-                                 baseTableName="customer_shop"
-                                 constraintName="fk_customer_shop_customers_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="customer"/>
-        <addForeignKeyConstraint baseColumnNames="shops_id"
-                                 baseTableName="customer_shop"
-                                 constraintName="fk_customer_shop_shops_id"
+        <addForeignKeyConstraint baseColumnNames="shop_id"
+                                 baseTableName="customer"
+                                 constraintName="fk_customer_shop_id"
                                  referencedColumnNames="id"
                                  referencedTableName="shop"/>
-        
+
     </changeSet>
 </databaseChangeLog>

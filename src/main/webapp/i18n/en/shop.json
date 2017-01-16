@@ -19,9 +19,9 @@
             "name": "Name",
             "address": "Address",
             "phoneNumber": "Phone Number",
-            "customer": "Customer",
             "sale": "Sale",
-            "user": "User"
+            "user": "User",
+            "customer": "Customer"
         }
     }
 }

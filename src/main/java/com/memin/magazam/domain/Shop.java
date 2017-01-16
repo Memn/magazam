@@ -36,10 +36,6 @@ public class Shop implements Serializable {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @ManyToMany(mappedBy = "shops")
-    @JsonIgnore
-    private Set<Customer> customers = new HashSet<>();
-
     @OneToMany(mappedBy = "shop")
     @JsonIgnore
     private Set<Sale> sales = new HashSet<>();
@@ -47,6 +43,10 @@ public class Shop implements Serializable {
     @ManyToOne
     @NotNull
     private User user;
+
+    @OneToMany(mappedBy = "shop")
+    @JsonIgnore
+    private Set<Customer> customers = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -95,31 +95,6 @@ public class Shop implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public Set<Customer> getCustomers() {
-        return customers;
-    }
-
-    public Shop customers(Set<Customer> customers) {
-        this.customers = customers;
-        return this;
-    }
-
-    public Shop addCustomer(Customer customer) {
-        customers.add(customer);
-        customer.getShops().add(this);
-        return this;
-    }
-
-    public Shop removeCustomer(Customer customer) {
-        customers.remove(customer);
-        customer.getShops().remove(this);
-        return this;
-    }
-
-    public void setCustomers(Set<Customer> customers) {
-        this.customers = customers;
-    }
-
     public Set<Sale> getSales() {
         return sales;
     }
@@ -156,6 +131,31 @@ public class Shop implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<Customer> getCustomers() {
+        return customers;
+    }
+
+    public Shop customers(Set<Customer> customers) {
+        this.customers = customers;
+        return this;
+    }
+
+    public Shop addCustomer(Customer customer) {
+        customers.add(customer);
+        customer.setShop(this);
+        return this;
+    }
+
+    public Shop removeCustomer(Customer customer) {
+        customers.remove(customer);
+        customer.setShop(null);
+        return this;
+    }
+
+    public void setCustomers(Set<Customer> customers) {
+        this.customers = customers;
     }
 
     @Override

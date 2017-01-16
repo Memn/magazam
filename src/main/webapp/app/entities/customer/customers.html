@@ -41,6 +41,7 @@
                     <th jh-sort-by="address"><span data-translate="magazamApp.customer.address">Address</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="remainingDebt"><span data-translate="magazamApp.customer.remainingDebt">Remaining Debt</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="creationDate"><span data-translate="magazamApp.customer.creationDate">Creation Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="shop.name"><span data-translate="magazamApp.customer.shop">Shop</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -52,6 +53,9 @@
                     <td>{{customer.address}}</td>
                     <td>{{customer.remainingDebt}}</td>
                     <td>{{customer.creationDate | date:'medium'}}</td>
+                    <td>
+                        <a ui-sref="shop-detail({id:customer.shop.id})">{{customer.shop.name}}</a>
+                    </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

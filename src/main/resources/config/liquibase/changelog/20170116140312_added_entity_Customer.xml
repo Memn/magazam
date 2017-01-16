@@ -44,20 +44,13 @@
                 <constraints nullable="true" />
             </column>
             
+            <column name="shop_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="customer" columnName="creation_date" columnDataType="datetime"/>
-        
-        <createTable tableName="customer_shop">
-            <column name="shops_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="customers_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="customers_id, shops_id" tableName="customer_shop"/>
         
     </changeSet>
 </databaseChangeLog>

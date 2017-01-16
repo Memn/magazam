@@ -2,17 +2,6 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "shop",
-            "otherEntityName": "shop",
-            "relationshipType": "many-to-many",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "name",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "customer"
-        },
-        {
             "relationshipName": "sale",
             "otherEntityName": "sale",
             "relationshipType": "one-to-many",
@@ -23,6 +12,15 @@
             "otherEntityName": "payment",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "customer"
+        },
+        {
+            "relationshipName": "shop",
+            "otherEntityName": "shop",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
         }
     ],
     "fields": [

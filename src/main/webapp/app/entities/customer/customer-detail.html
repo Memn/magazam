@@ -26,9 +26,7 @@
         </dd>
         <dt><span data-translate="magazamApp.customer.shop">Shop</span></dt>
         <dd>
-            <span ng-repeat="shop in vm.customer.shops">
-                <a ui-sref="shop-detail({id: shop.id})">{{shop.name}}</a>{{$last ? '' : ', '}}
-            </span>
+            <a ui-sref="shop-detail({id:vm.customer.shop.id})">{{vm.customer.shop.name}}</a>
         </dd>
     </dl>
 

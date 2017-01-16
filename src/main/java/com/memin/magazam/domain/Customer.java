@@ -44,13 +44,6 @@ public class Customer implements Serializable {
     @Column(name = "creation_date")
     private ZonedDateTime creationDate;
 
-    @ManyToMany
-    @NotNull
-    @JoinTable(name = "customer_shop",
-               joinColumns = @JoinColumn(name="customers_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="shops_id", referencedColumnName="ID"))
-    private Set<Shop> shops = new HashSet<>();
-
     @OneToMany(mappedBy = "customer")
     @JsonIgnore
     private Set<Sale> sales = new HashSet<>();
@@ -58,6 +51,10 @@ public class Customer implements Serializable {
     @OneToMany(mappedBy = "customer")
     @JsonIgnore
     private Set<Payment> payments = new HashSet<>();
+
+    @ManyToOne
+    @NotNull
+    private Shop shop;
 
     public Long getId() {
         return id;
@@ -132,31 +129,6 @@ public class Customer implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Set<Shop> getShops() {
-        return shops;
-    }
-
-    public Customer shops(Set<Shop> shops) {
-        this.shops = shops;
-        return this;
-    }
-
-    public Customer addShop(Shop shop) {
-        shops.add(shop);
-        shop.getCustomers().add(this);
-        return this;
-    }
-
-    public Customer removeShop(Shop shop) {
-        shops.remove(shop);
-        shop.getCustomers().remove(this);
-        return this;
-    }
-
-    public void setShops(Set<Shop> shops) {
-        this.shops = shops;
-    }
-
     public Set<Sale> getSales() {
         return sales;
     }
@@ -205,6 +177,19 @@ public class Customer implements Serializable {
 
     public void setPayments(Set<Payment> payments) {
         this.payments = payments;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public Customer shop(Shop shop) {
+        this.shop = shop;
+        return this;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     @Override

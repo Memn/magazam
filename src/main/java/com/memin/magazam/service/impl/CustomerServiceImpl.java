@@ -68,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService{
     @Transactional(readOnly = true) 
     public Customer findOne(Long id) {
         log.debug("Request to get Customer : {}", id);
-        Customer customer = customerRepository.findOneWithEagerRelationships(id);
+        Customer customer = customerRepository.findOne(id);
         return customer;
     }
 

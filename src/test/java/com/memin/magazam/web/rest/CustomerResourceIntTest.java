@@ -110,7 +110,7 @@ public class CustomerResourceIntTest {
         Shop shop = ShopResourceIntTest.createEntity(em);
         em.persist(shop);
         em.flush();
-        customer.getShops().add(shop);
+        customer.setShop(shop);
         return customer;
     }
 

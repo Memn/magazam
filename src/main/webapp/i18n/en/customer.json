@@ -21,9 +21,9 @@
             "address": "Address",
             "remainingDebt": "Remaining Debt",
             "creationDate": "Creation Date",
-            "shop": "Shop",
             "sale": "Sale",
-            "payment": "Payment"
+            "payment": "Payment",
+            "shop": "Shop"
         }
     }
 }
