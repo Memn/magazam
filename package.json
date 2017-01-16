@@ -62,6 +62,7 @@
     "node": "^4.3"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "postinstall": "bower install"
   }
 }
