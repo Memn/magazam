@@ -60,11 +60,7 @@
   "engines": {
     "node": "^4.3"
   },
-  "dependencies": {
-    "bower": "1.7.9","gulp": "3.9.1"
-  },
   "scripts": {
-    "test": "gulp test",
-    "postinstall": "bower install && grunt build"
+    "test": "gulp test"
   }
 }
