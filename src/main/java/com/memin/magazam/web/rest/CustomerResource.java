@@ -22,6 +22,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Customer.
@@ -125,5 +129,25 @@ public class CustomerResource {
         customerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("customer", id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/customers?query=:query : search for the customer corresponding
+     * to the query.
+     *
+     * @param query the query of the customer search 
+     * @param pageable the pagination information
+     * @return the result of the search
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/_search/customers")
+    @Timed
+    public ResponseEntity<List<Customer>> searchCustomers(@RequestParam String query, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to search for a page of Customers for query {}", query);
+        Page<Customer> page = customerService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/customers");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.memin.magazam.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.memin.magazam.domain.Payment;
+import com.memin.magazam.service.CustomerOperationService;
 import com.memin.magazam.service.PaymentService;
 import com.memin.magazam.web.rest.util.HeaderUtil;
 import com.memin.magazam.web.rest.util.PaginationUtil;
@@ -22,6 +23,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Payment.
@@ -31,9 +36,12 @@ import java.util.Optional;
 public class PaymentResource {
 
     private final Logger log = LoggerFactory.getLogger(PaymentResource.class);
-        
+
     @Inject
     private PaymentService paymentService;
+
+    @Inject
+    private CustomerOperationService customerOperationService;
 
     /**
      * POST  /payments : Create a new payment.
@@ -49,10 +57,10 @@ public class PaymentResource {
         if (payment.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("payment", "idexists", "A new payment cannot already have an ID")).body(null);
         }
-        Payment result = paymentService.save(payment);
+        Payment result = customerOperationService.pay(payment);
         return ResponseEntity.created(new URI("/api/payments/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("payment", result.getId().toString()))
-            .body(result);
+                             .headers(HeaderUtil.createEntityCreationAlert("payment", result.getId().toString()))
+                             .body(result);
     }
 
     /**
@@ -71,10 +79,10 @@ public class PaymentResource {
         if (payment.getId() == null) {
             return createPayment(payment);
         }
-        Payment result = paymentService.save(payment);
+        Payment result = customerOperationService.updatePayment(payment);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("payment", payment.getId().toString()))
-            .body(result);
+                             .headers(HeaderUtil.createEntityUpdateAlert("payment", payment.getId().toString()))
+                             .body(result);
     }
 
     /**
@@ -87,7 +95,7 @@ public class PaymentResource {
     @GetMapping("/payments")
     @Timed
     public ResponseEntity<List<Payment>> getAllPayments(@ApiParam Pageable pageable)
-        throws URISyntaxException {
+    throws URISyntaxException {
         log.debug("REST request to get a page of Payments");
         Page<Payment> page = paymentService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payments");
@@ -106,10 +114,10 @@ public class PaymentResource {
         log.debug("REST request to get Payment : {}", id);
         Payment payment = paymentService.findOne(id);
         return Optional.ofNullable(payment)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                       .map(result -> new ResponseEntity<>(
+                           result,
+                           HttpStatus.OK))
+                       .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -122,8 +130,28 @@ public class PaymentResource {
     @Timed
     public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         log.debug("REST request to delete Payment : {}", id);
-        paymentService.delete(id);
+        customerOperationService.deletePayment(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("payment", id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/payments?query=:query : search for the payment corresponding
+     * to the query.
+     *
+     * @param query the query of the payment search
+     * @param pageable the pagination information
+     * @return the result of the search
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/_search/payments")
+    @Timed
+    public ResponseEntity<List<Payment>> searchPayments(@RequestParam String query, @ApiParam Pageable pageable)
+    throws URISyntaxException {
+        log.debug("REST request to search for a page of Payments for query {}", query);
+        Page<Payment> page = paymentService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/payments");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
 }

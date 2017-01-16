@@ -4,6 +4,7 @@ import com.memin.magazam.domain.Authority;
 import com.memin.magazam.domain.User;
 import com.memin.magazam.repository.AuthorityRepository;
 import com.memin.magazam.repository.UserRepository;
+import com.memin.magazam.repository.search.UserSearchRepository;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,9 @@ public class SocialService {
 
     @Inject
     private UserRepository userRepository;
+
+    @Inject
+    private UserSearchRepository userSearchRepository;
 
     @Inject
     private MailService mailService;
@@ -99,6 +103,7 @@ public class SocialService {
         newUser.setAuthorities(authorities);
         newUser.setLangKey(langKey);
 
+        userSearchRepository.save(newUser);
         return userRepository.save(newUser);
     }
 

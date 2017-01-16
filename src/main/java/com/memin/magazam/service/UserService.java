@@ -5,6 +5,7 @@ import com.memin.magazam.domain.User;
 import com.memin.magazam.repository.AuthorityRepository;
 import com.memin.magazam.repository.PersistentTokenRepository;
 import com.memin.magazam.repository.UserRepository;
+import com.memin.magazam.repository.search.UserSearchRepository;
 import com.memin.magazam.security.AuthoritiesConstants;
 import com.memin.magazam.security.SecurityUtils;
 import com.memin.magazam.service.util.RandomUtil;
@@ -40,6 +41,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Inject
+    private UserSearchRepository userSearchRepository;
+
+    @Inject
     private PersistentTokenRepository persistentTokenRepository;
 
     @Inject
@@ -52,6 +56,7 @@ public class UserService {
                 // activate given user for the registration key.
                 user.setActivated(true);
                 user.setActivationKey(null);
+                userSearchRepository.save(user);
                 log.debug("Activated user: {}", user);
                 return user;
             });
@@ -104,6 +109,7 @@ public class UserService {
         authorities.add(authority);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
+        userSearchRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -132,6 +138,7 @@ public class UserService {
         user.setResetDate(ZonedDateTime.now());
         user.setActivated(true);
         userRepository.save(user);
+        userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -142,6 +149,7 @@ public class UserService {
             user.setLastName(lastName);
             user.setEmail(email);
             user.setLangKey(langKey);
+            userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
         });
     }
@@ -171,6 +179,7 @@ public class UserService {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             socialService.deleteUserSocialConnection(user.getLogin());
             userRepository.delete(user);
+            userSearchRepository.delete(user);
             log.debug("Deleted User: {}", user);
         });
     }
@@ -240,6 +249,7 @@ public class UserService {
         for (User user : users) {
             log.debug("Deleting not activated user {}", user.getLogin());
             userRepository.delete(user);
+            userSearchRepository.delete(user);
         }
     }
 }

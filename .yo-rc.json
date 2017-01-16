@@ -12,11 +12,11 @@
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
     "prodDatabaseType": "mysql",
-    "searchEngine": false,
+    "searchEngine": "elasticsearch",
     "messageBroker": false,
     "buildTool": "gradle",
     "enableSocialSignIn": true,
-    "rememberMeKey": "e017ec40284ea9d2f658aea7dbf45956b94a74ab",
+    "rememberMeKey": "0c1eb6fc0f606c1d9fcfdc1267e06ddaa033e0cc",
     "useSass": false,
     "applicationType": "monolith",
     "testFrameworks": [

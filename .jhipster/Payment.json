@@ -2,10 +2,12 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "customer",
             "otherEntityName": "customer",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
             "otherEntityField": "name"
         }
     ],
@@ -35,9 +37,9 @@
             ]
         }
     ],
-    "changelogDate": "20170117105008",
-    "entityTableName": "payment",
+    "changelogDate": "20170116141323",
     "dto": "no",
-    "pagination": "infinite-scroll",
-    "service": "serviceImpl"
+    "service": "serviceImpl",
+    "entityTableName": "payment",
+    "pagination": "infinite-scroll"
 }

@@ -6,6 +6,7 @@ import com.memin.magazam.domain.Payment;
 import com.memin.magazam.domain.Customer;
 import com.memin.magazam.repository.PaymentRepository;
 import com.memin.magazam.service.PaymentService;
+import com.memin.magazam.repository.search.PaymentSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,9 @@ public class PaymentResourceIntTest {
     private PaymentService paymentService;
 
     @Inject
+    private PaymentSearchRepository paymentSearchRepository;
+
+    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -105,6 +109,7 @@ public class PaymentResourceIntTest {
 
     @Before
     public void initTest() {
+        paymentSearchRepository.deleteAll();
         payment = createEntity(em);
     }
 
@@ -127,6 +132,10 @@ public class PaymentResourceIntTest {
         assertThat(testPayment.getDate()).isEqualTo(DEFAULT_DATE);
         assertThat(testPayment.getAmount()).isEqualTo(DEFAULT_AMOUNT);
         assertThat(testPayment.getPaymentType()).isEqualTo(DEFAULT_PAYMENT_TYPE);
+
+        // Validate the Payment in ElasticSearch
+        Payment paymentEs = paymentSearchRepository.findOne(testPayment.getId());
+        assertThat(paymentEs).isEqualToComparingFieldByField(testPayment);
     }
 
     @Test
@@ -270,6 +279,10 @@ public class PaymentResourceIntTest {
         assertThat(testPayment.getDate()).isEqualTo(UPDATED_DATE);
         assertThat(testPayment.getAmount()).isEqualTo(UPDATED_AMOUNT);
         assertThat(testPayment.getPaymentType()).isEqualTo(UPDATED_PAYMENT_TYPE);
+
+        // Validate the Payment in ElasticSearch
+        Payment paymentEs = paymentSearchRepository.findOne(testPayment.getId());
+        assertThat(paymentEs).isEqualToComparingFieldByField(testPayment);
     }
 
     @Test
@@ -303,8 +316,28 @@ public class PaymentResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate ElasticSearch is empty
+        boolean paymentExistsInEs = paymentSearchRepository.exists(payment.getId());
+        assertThat(paymentExistsInEs).isFalse();
+
         // Validate the database is empty
         List<Payment> paymentList = paymentRepository.findAll();
         assertThat(paymentList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchPayment() throws Exception {
+        // Initialize the database
+        paymentService.save(payment);
+
+        // Search the payment
+        restPaymentMockMvc.perform(get("/api/_search/payments?query=id:" + payment.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(payment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].date").value(hasItem(sameInstant(DEFAULT_DATE))))
+            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.intValue())))
+            .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE.toString())));
     }
 }

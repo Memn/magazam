@@ -6,6 +6,7 @@ import com.memin.magazam.domain.Shop;
 import com.memin.magazam.domain.User;
 import com.memin.magazam.repository.ShopRepository;
 import com.memin.magazam.service.ShopService;
+import com.memin.magazam.repository.search.ShopSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,9 @@ public class ShopResourceIntTest {
     private ShopService shopService;
 
     @Inject
+    private ShopSearchRepository shopSearchRepository;
+
+    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -98,6 +102,7 @@ public class ShopResourceIntTest {
 
     @Before
     public void initTest() {
+        shopSearchRepository.deleteAll();
         shop = createEntity(em);
     }
 
@@ -120,6 +125,10 @@ public class ShopResourceIntTest {
         assertThat(testShop.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testShop.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testShop.getPhoneNumber()).isEqualTo(DEFAULT_PHONE_NUMBER);
+
+        // Validate the Shop in ElasticSearch
+        Shop shopEs = shopSearchRepository.findOne(testShop.getId());
+        assertThat(shopEs).isEqualToComparingFieldByField(testShop);
     }
 
     @Test
@@ -245,6 +254,10 @@ public class ShopResourceIntTest {
         assertThat(testShop.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testShop.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testShop.getPhoneNumber()).isEqualTo(UPDATED_PHONE_NUMBER);
+
+        // Validate the Shop in ElasticSearch
+        Shop shopEs = shopSearchRepository.findOne(testShop.getId());
+        assertThat(shopEs).isEqualToComparingFieldByField(testShop);
     }
 
     @Test
@@ -278,8 +291,28 @@ public class ShopResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate ElasticSearch is empty
+        boolean shopExistsInEs = shopSearchRepository.exists(shop.getId());
+        assertThat(shopExistsInEs).isFalse();
+
         // Validate the database is empty
         List<Shop> shopList = shopRepository.findAll();
         assertThat(shopList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchShop() throws Exception {
+        // Initialize the database
+        shopService.save(shop);
+
+        // Search the shop
+        restShopMockMvc.perform(get("/api/_search/shops?query=id:" + shop.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(shop.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())));
     }
 }

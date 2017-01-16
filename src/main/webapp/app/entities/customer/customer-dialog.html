@@ -66,9 +66,7 @@
 
         <div class="form-group">
             <label data-translate="magazamApp.customer.shop" for="field_shop">Shop</label>
-            <select class="form-control" id="field_shop" name="shop" ng-model="vm.customer.shop" ng-options="shop as shop.name for shop in vm.shops track by shop.id" required>
-                <option value=""></option>
-            </select>
+            <select class="form-control" id="field_shop" multiple name="shop" ng-model="vm.customer.shops" ng-options="shop as shop.name for shop in vm.shops track by shop.id" required></select>
         </div>
         <div ng-show="editForm.shop.$invalid">
             <p class="help-block"

@@ -5,6 +5,7 @@ import com.memin.magazam.domain.Authority;
 import com.memin.magazam.domain.User;
 import com.memin.magazam.repository.AuthorityRepository;
 import com.memin.magazam.repository.UserRepository;
+import com.memin.magazam.repository.search.UserSearchRepository;
 import com.memin.magazam.service.MailService;
 
 import org.junit.Before;
@@ -41,6 +42,9 @@ public class SocialServiceIntTest {
     @Inject
     private UserRepository userRepository;
 
+    @Inject
+    private UserSearchRepository userSearchRepository;
+
     @Mock
     private MailService mockMailService;
 
@@ -64,6 +68,7 @@ public class SocialServiceIntTest {
         ReflectionTestUtils.setField(socialService, "passwordEncoder", passwordEncoder);
         ReflectionTestUtils.setField(socialService, "mailService", mockMailService);
         ReflectionTestUtils.setField(socialService, "userRepository", userRepository);
+        ReflectionTestUtils.setField(socialService, "userSearchRepository", userSearchRepository);
         ReflectionTestUtils.setField(socialService, "usersConnectionRepository", mockUsersConnectionRepository);
     }
 

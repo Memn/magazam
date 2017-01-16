@@ -22,6 +22,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Shop.
@@ -125,5 +129,25 @@ public class ShopResource {
         shopService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("shop", id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/shops?query=:query : search for the shop corresponding
+     * to the query.
+     *
+     * @param query the query of the shop search 
+     * @param pageable the pagination information
+     * @return the result of the search
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/_search/shops")
+    @Timed
+    public ResponseEntity<List<Shop>> searchShops(@RequestParam String query, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to search for a page of Shops for query {}", query);
+        Page<Shop> page = shopService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shops");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
 }

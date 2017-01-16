@@ -5,9 +5,9 @@
         .module('magazamApp')
         .controller('CustomerDetailController', CustomerDetailController);
 
-    CustomerDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Customer', 'Sale', 'Payment', 'Shop'];
+    CustomerDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Customer', 'Shop', 'Sale', 'Payment'];
 
-    function CustomerDetailController($scope, $rootScope, $stateParams, previousState, entity, Customer, Sale, Payment, Shop) {
+    function CustomerDetailController($scope, $rootScope, $stateParams, previousState, entity, Customer, Shop, Sale, Payment) {
         var vm = this;
 
         vm.customer = entity;

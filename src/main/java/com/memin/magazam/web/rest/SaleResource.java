@@ -2,10 +2,10 @@ package com.memin.magazam.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.memin.magazam.domain.Sale;
+import com.memin.magazam.service.CustomerOperationService;
 import com.memin.magazam.service.SaleService;
 import com.memin.magazam.web.rest.util.HeaderUtil;
 import com.memin.magazam.web.rest.util.PaginationUtil;
-
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -31,9 +39,12 @@ import java.util.Optional;
 public class SaleResource {
 
     private final Logger log = LoggerFactory.getLogger(SaleResource.class);
-        
+
     @Inject
     private SaleService saleService;
+
+    @Inject
+    private CustomerOperationService customerOperationService;
 
     /**
      * POST  /sales : Create a new sale.
@@ -49,10 +60,10 @@ public class SaleResource {
         if (sale.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("sale", "idexists", "A new sale cannot already have an ID")).body(null);
         }
-        Sale result = saleService.save(sale);
+        Sale result = customerOperationService.sale(sale);
         return ResponseEntity.created(new URI("/api/sales/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("sale", result.getId().toString()))
-            .body(result);
+                             .headers(HeaderUtil.createEntityCreationAlert("sale", result.getId().toString()))
+                             .body(result);
     }
 
     /**
@@ -71,10 +82,10 @@ public class SaleResource {
         if (sale.getId() == null) {
             return createSale(sale);
         }
-        Sale result = saleService.save(sale);
+        Sale result = customerOperationService.updateSale(sale);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("sale", sale.getId().toString()))
-            .body(result);
+                             .headers(HeaderUtil.createEntityUpdateAlert("sale", sale.getId().toString()))
+                             .body(result);
     }
 
     /**
@@ -87,7 +98,7 @@ public class SaleResource {
     @GetMapping("/sales")
     @Timed
     public ResponseEntity<List<Sale>> getAllSales(@ApiParam Pageable pageable)
-        throws URISyntaxException {
+    throws URISyntaxException {
         log.debug("REST request to get a page of Sales");
         Page<Sale> page = saleService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sales");
@@ -106,10 +117,10 @@ public class SaleResource {
         log.debug("REST request to get Sale : {}", id);
         Sale sale = saleService.findOne(id);
         return Optional.ofNullable(sale)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                       .map(result -> new ResponseEntity<>(
+                           result,
+                           HttpStatus.OK))
+                       .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -122,8 +133,28 @@ public class SaleResource {
     @Timed
     public ResponseEntity<Void> deleteSale(@PathVariable Long id) {
         log.debug("REST request to delete Sale : {}", id);
-        saleService.delete(id);
+        customerOperationService.deleteSale(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("sale", id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/sales?query=:query : search for the sale corresponding
+     * to the query.
+     *
+     * @param query the query of the sale search
+     * @param pageable the pagination information
+     * @return the result of the search
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/_search/sales")
+    @Timed
+    public ResponseEntity<List<Sale>> searchSales(@RequestParam String query, @ApiParam Pageable pageable)
+    throws URISyntaxException {
+        log.debug("REST request to search for a page of Sales for query {}", query);
+        Page<Sale> page = saleService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/sales");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
 }

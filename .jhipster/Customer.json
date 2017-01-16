@@ -2,23 +2,27 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-many",
-            "relationshipName": "sale",
-            "otherEntityName": "sale",
-            "otherEntityRelationshipName": "customer"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "payment",
-            "otherEntityName": "payment",
-            "otherEntityRelationshipName": "customer"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "shop",
             "otherEntityName": "shop",
-            "otherEntityField": "name"
+            "relationshipType": "many-to-many",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "customer"
+        },
+        {
+            "relationshipName": "sale",
+            "otherEntityName": "sale",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "customer"
+        },
+        {
+            "relationshipName": "payment",
+            "otherEntityName": "payment",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "customer"
         }
     ],
     "fields": [
@@ -29,7 +33,7 @@
                 "required",
                 "minlength"
             ],
-            "fieldValidateRulesMinlength": 2
+            "fieldValidateRulesMinlength": "2"
         },
         {
             "fieldName": "phoneNumber",
@@ -51,9 +55,9 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20170117105006",
-    "entityTableName": "customer",
+    "changelogDate": "20170116140312",
     "dto": "no",
-    "pagination": "infinite-scroll",
-    "service": "serviceImpl"
+    "service": "serviceImpl",
+    "entityTableName": "customer",
+    "pagination": "infinite-scroll"
 }

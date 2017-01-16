@@ -6,6 +6,7 @@ import com.memin.magazam.domain.Customer;
 import com.memin.magazam.domain.Shop;
 import com.memin.magazam.repository.CustomerRepository;
 import com.memin.magazam.service.CustomerService;
+import com.memin.magazam.repository.search.CustomerSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,6 +68,9 @@ public class CustomerResourceIntTest {
     private CustomerService customerService;
 
     @Inject
+    private CustomerSearchRepository customerSearchRepository;
+
+    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -106,12 +110,13 @@ public class CustomerResourceIntTest {
         Shop shop = ShopResourceIntTest.createEntity(em);
         em.persist(shop);
         em.flush();
-        customer.setShop(shop);
+        customer.getShops().add(shop);
         return customer;
     }
 
     @Before
     public void initTest() {
+        customerSearchRepository.deleteAll();
         customer = createEntity(em);
     }
 
@@ -136,6 +141,10 @@ public class CustomerResourceIntTest {
         assertThat(testCustomer.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testCustomer.getRemainingDebt()).isEqualTo(DEFAULT_REMAINING_DEBT);
         assertThat(testCustomer.getCreationDate()).isEqualTo(DEFAULT_CREATION_DATE);
+
+        // Validate the Customer in ElasticSearch
+        Customer customerEs = customerSearchRepository.findOne(testCustomer.getId());
+        assertThat(customerEs).isEqualToComparingFieldByField(testCustomer);
     }
 
     @Test
@@ -269,6 +278,10 @@ public class CustomerResourceIntTest {
         assertThat(testCustomer.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testCustomer.getRemainingDebt()).isEqualTo(UPDATED_REMAINING_DEBT);
         assertThat(testCustomer.getCreationDate()).isEqualTo(UPDATED_CREATION_DATE);
+
+        // Validate the Customer in ElasticSearch
+        Customer customerEs = customerSearchRepository.findOne(testCustomer.getId());
+        assertThat(customerEs).isEqualToComparingFieldByField(testCustomer);
     }
 
     @Test
@@ -302,8 +315,30 @@ public class CustomerResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate ElasticSearch is empty
+        boolean customerExistsInEs = customerSearchRepository.exists(customer.getId());
+        assertThat(customerExistsInEs).isFalse();
+
         // Validate the database is empty
         List<Customer> customerList = customerRepository.findAll();
         assertThat(customerList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchCustomer() throws Exception {
+        // Initialize the database
+        customerService.save(customer);
+
+        // Search the customer
+        restCustomerMockMvc.perform(get("/api/_search/customers?query=id:" + customer.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(customer.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
+            .andExpect(jsonPath("$.[*].remainingDebt").value(hasItem(DEFAULT_REMAINING_DEBT.intValue())))
+            .andExpect(jsonPath("$.[*].creationDate").value(hasItem(sameInstant(DEFAULT_CREATION_DATE))));
     }
 }

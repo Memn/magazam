@@ -3,6 +3,7 @@ package com.memin.magazam.service.impl;
 import com.memin.magazam.service.PaymentService;
 import com.memin.magazam.domain.Payment;
 import com.memin.magazam.repository.PaymentRepository;
+import com.memin.magazam.repository.search.PaymentSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Payment.
@@ -25,6 +30,9 @@ public class PaymentServiceImpl implements PaymentService{
     @Inject
     private PaymentRepository paymentRepository;
 
+    @Inject
+    private PaymentSearchRepository paymentSearchRepository;
+
     /**
      * Save a payment.
      *
@@ -34,6 +42,7 @@ public class PaymentServiceImpl implements PaymentService{
     public Payment save(Payment payment) {
         log.debug("Request to save Payment : {}", payment);
         Payment result = paymentRepository.save(payment);
+        paymentSearchRepository.save(result);
         return result;
     }
 
@@ -71,5 +80,19 @@ public class PaymentServiceImpl implements PaymentService{
     public void delete(Long id) {
         log.debug("Request to delete Payment : {}", id);
         paymentRepository.delete(id);
+        paymentSearchRepository.delete(id);
+    }
+
+    /**
+     * Search for the payment corresponding to the query.
+     *
+     *  @param query the query of the search
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<Payment> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Payments for query {}", query);
+        Page<Payment> result = paymentSearchRepository.search(queryStringQuery(query), pageable);
+        return result;
     }
 }

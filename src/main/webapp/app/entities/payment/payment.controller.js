@@ -5,9 +5,9 @@
         .module('magazamApp')
         .controller('PaymentController', PaymentController);
 
-    PaymentController.$inject = ['$scope', '$state', 'Payment', 'ParseLinks', 'AlertService', 'paginationConstants'];
+    PaymentController.$inject = ['$scope', '$state', 'Payment', 'PaymentSearch', 'ParseLinks', 'AlertService', 'paginationConstants'];
 
-    function PaymentController ($scope, $state, Payment, ParseLinks, AlertService, paginationConstants) {
+    function PaymentController ($scope, $state, Payment, PaymentSearch, ParseLinks, AlertService, paginationConstants) {
         var vm = this;
 
         vm.payments = [];
@@ -20,15 +20,27 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
+        vm.clear = clear;
+        vm.loadAll = loadAll;
+        vm.search = search;
 
         loadAll();
 
         function loadAll () {
-            Payment.query({
-                page: vm.page,
-                size: vm.itemsPerPage,
-                sort: sort()
-            }, onSuccess, onError);
+            if (vm.currentSearch) {
+                PaymentSearch.query({
+                    query: vm.currentSearch,
+                    page: vm.page,
+                    size: vm.itemsPerPage,
+                    sort: sort()
+                }, onSuccess, onError);
+            } else {
+                Payment.query({
+                    page: vm.page,
+                    size: vm.itemsPerPage,
+                    sort: sort()
+                }, onSuccess, onError);
+            }
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -59,6 +71,34 @@
         function loadPage(page) {
             vm.page = page;
             loadAll();
+        }
+
+        function clear () {
+            vm.payments = [];
+            vm.links = {
+                last: 0
+            };
+            vm.page = 0;
+            vm.predicate = 'id';
+            vm.reverse = true;
+            vm.searchQuery = null;
+            vm.currentSearch = null;
+            vm.loadAll();
+        }
+
+        function search (searchQuery) {
+            if (!searchQuery){
+                return vm.clear();
+            }
+            vm.payments = [];
+            vm.links = {
+                last: 0
+            };
+            vm.page = 0;
+            vm.predicate = '_score';
+            vm.reverse = false;
+            vm.currentSearch = searchQuery;
+            vm.loadAll();
         }
     }
 })();

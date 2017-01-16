@@ -7,6 +7,7 @@ import com.memin.magazam.domain.Customer;
 import com.memin.magazam.domain.Shop;
 import com.memin.magazam.repository.SaleRepository;
 import com.memin.magazam.service.SaleService;
+import com.memin.magazam.repository.search.SaleSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +60,9 @@ public class SaleResourceIntTest {
     private SaleService saleService;
 
     @Inject
+    private SaleSearchRepository saleSearchRepository;
+
+    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -106,6 +110,7 @@ public class SaleResourceIntTest {
 
     @Before
     public void initTest() {
+        saleSearchRepository.deleteAll();
         sale = createEntity(em);
     }
 
@@ -127,6 +132,10 @@ public class SaleResourceIntTest {
         Sale testSale = saleList.get(saleList.size() - 1);
         assertThat(testSale.getDate()).isEqualTo(DEFAULT_DATE);
         assertThat(testSale.getAmount()).isEqualTo(DEFAULT_AMOUNT);
+
+        // Validate the Sale in ElasticSearch
+        Sale saleEs = saleSearchRepository.findOne(testSale.getId());
+        assertThat(saleEs).isEqualToComparingFieldByField(testSale);
     }
 
     @Test
@@ -248,6 +257,10 @@ public class SaleResourceIntTest {
         Sale testSale = saleList.get(saleList.size() - 1);
         assertThat(testSale.getDate()).isEqualTo(UPDATED_DATE);
         assertThat(testSale.getAmount()).isEqualTo(UPDATED_AMOUNT);
+
+        // Validate the Sale in ElasticSearch
+        Sale saleEs = saleSearchRepository.findOne(testSale.getId());
+        assertThat(saleEs).isEqualToComparingFieldByField(testSale);
     }
 
     @Test
@@ -281,8 +294,27 @@ public class SaleResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate ElasticSearch is empty
+        boolean saleExistsInEs = saleSearchRepository.exists(sale.getId());
+        assertThat(saleExistsInEs).isFalse();
+
         // Validate the database is empty
         List<Sale> saleList = saleRepository.findAll();
         assertThat(saleList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchSale() throws Exception {
+        // Initialize the database
+        saleService.save(sale);
+
+        // Search the sale
+        restSaleMockMvc.perform(get("/api/_search/sales?query=id:" + sale.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(sale.getId().intValue())))
+            .andExpect(jsonPath("$.[*].date").value(hasItem(sameInstant(DEFAULT_DATE))))
+            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.intValue())));
     }
 }

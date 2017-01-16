@@ -5,9 +5,9 @@
         .module('magazamApp')
         .controller('SaleController', SaleController);
 
-    SaleController.$inject = ['$scope', '$state', 'Sale', 'ParseLinks', 'AlertService', 'paginationConstants'];
+    SaleController.$inject = ['$scope', '$state', 'Sale', 'SaleSearch', 'ParseLinks', 'AlertService', 'paginationConstants'];
 
-    function SaleController ($scope, $state, Sale, ParseLinks, AlertService, paginationConstants) {
+    function SaleController ($scope, $state, Sale, SaleSearch, ParseLinks, AlertService, paginationConstants) {
         var vm = this;
 
         vm.sales = [];
@@ -20,15 +20,27 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
+        vm.clear = clear;
+        vm.loadAll = loadAll;
+        vm.search = search;
 
         loadAll();
 
         function loadAll () {
-            Sale.query({
-                page: vm.page,
-                size: vm.itemsPerPage,
-                sort: sort()
-            }, onSuccess, onError);
+            if (vm.currentSearch) {
+                SaleSearch.query({
+                    query: vm.currentSearch,
+                    page: vm.page,
+                    size: vm.itemsPerPage,
+                    sort: sort()
+                }, onSuccess, onError);
+            } else {
+                Sale.query({
+                    page: vm.page,
+                    size: vm.itemsPerPage,
+                    sort: sort()
+                }, onSuccess, onError);
+            }
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -59,6 +71,34 @@
         function loadPage(page) {
             vm.page = page;
             loadAll();
+        }
+
+        function clear () {
+            vm.sales = [];
+            vm.links = {
+                last: 0
+            };
+            vm.page = 0;
+            vm.predicate = 'id';
+            vm.reverse = true;
+            vm.searchQuery = null;
+            vm.currentSearch = null;
+            vm.loadAll();
+        }
+
+        function search (searchQuery) {
+            if (!searchQuery){
+                return vm.clear();
+            }
+            vm.sales = [];
+            vm.links = {
+                last: 0
+            };
+            vm.page = 0;
+            vm.predicate = '_score';
+            vm.reverse = false;
+            vm.currentSearch = searchQuery;
+            vm.loadAll();
         }
     }
 })();

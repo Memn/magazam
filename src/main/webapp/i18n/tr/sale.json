@@ -2,24 +2,24 @@
     "magazamApp": {
         "sale" : {
             "home": {
-                "title": "Satışlar",
-                "createLabel": "Satış Oluştur",
-                "createOrEditLabel": "Satış Oluştur veya Güncelle",
-                "search": "Satışlarda Ara"
+                "title": "Sales",
+                "createLabel": "Create a new Sale",
+                "createOrEditLabel": "Create or edit a Sale",
+                "search": "Search for Sale"
             },
-            "created": "Yeni Satış oluşturuldu {{ param }}",
-            "updated": "Satış güncellendi {{ param }}",
-            "deleted": "Satış silindi {{ param }}",
+            "created": "A new Sale is created with identifier {{ param }}",
+            "updated": "A Sale is updated with identifier {{ param }}",
+            "deleted": "A Sale is deleted with identifier {{ param }}",
             "delete": {
-                "question": "{{ id }} kayıtlı Satış silinecek. Emin misiniz??"
+                "question": "Are you sure you want to delete Sale {{ id }}?"
             },
             "detail": {
-                "title": "Satış"
+                "title": "Sale"
             },
-            "date": "Tarih",
-            "amount": "Tutar",
-            "customer": "Müşteri",
-            "shop": "Mağaza"
+            "date": "Date",
+            "amount": "Amount",
+            "customer": "Customer",
+            "shop": "Shop"
         }
     }
 }

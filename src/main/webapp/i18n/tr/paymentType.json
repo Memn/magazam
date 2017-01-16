@@ -2,8 +2,8 @@
     "magazamApp": {
         "PaymentType" : {
             "null": "",
-            "CASH": "Nakit",
-            "CREDIT_CARD": "Kredi Kartı",
+            "CASH": "CASH",
+            "CREDIT_CARD": "CREDIT_CARD",
             "OTHER": "OTHER"
         }
     }

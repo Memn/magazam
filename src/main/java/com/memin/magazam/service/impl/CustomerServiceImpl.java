@@ -3,6 +3,7 @@ package com.memin.magazam.service.impl;
 import com.memin.magazam.service.CustomerService;
 import com.memin.magazam.domain.Customer;
 import com.memin.magazam.repository.CustomerRepository;
+import com.memin.magazam.repository.search.CustomerSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Customer.
@@ -25,6 +30,9 @@ public class CustomerServiceImpl implements CustomerService{
     @Inject
     private CustomerRepository customerRepository;
 
+    @Inject
+    private CustomerSearchRepository customerSearchRepository;
+
     /**
      * Save a customer.
      *
@@ -34,6 +42,7 @@ public class CustomerServiceImpl implements CustomerService{
     public Customer save(Customer customer) {
         log.debug("Request to save Customer : {}", customer);
         Customer result = customerRepository.save(customer);
+        customerSearchRepository.save(result);
         return result;
     }
 
@@ -59,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService{
     @Transactional(readOnly = true) 
     public Customer findOne(Long id) {
         log.debug("Request to get Customer : {}", id);
-        Customer customer = customerRepository.findOne(id);
+        Customer customer = customerRepository.findOneWithEagerRelationships(id);
         return customer;
     }
 
@@ -71,5 +80,19 @@ public class CustomerServiceImpl implements CustomerService{
     public void delete(Long id) {
         log.debug("Request to delete Customer : {}", id);
         customerRepository.delete(id);
+        customerSearchRepository.delete(id);
+    }
+
+    /**
+     * Search for the customer corresponding to the query.
+     *
+     *  @param query the query of the search
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<Customer> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Customers for query {}", query);
+        Page<Customer> result = customerSearchRepository.search(queryStringQuery(query), pageable);
+        return result;
     }
 }

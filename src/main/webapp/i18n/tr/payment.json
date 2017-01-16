@@ -2,24 +2,24 @@
     "magazamApp": {
         "payment" : {
             "home": {
-                "title": "Ödemeler",
-                "createLabel": "Ödeme Oluştur",
-                "createOrEditLabel": "Ödeme Oluştur veya Güncelle",
-                "search": "Ödemelerde Ara"
+                "title": "Payments",
+                "createLabel": "Create a new Payment",
+                "createOrEditLabel": "Create or edit a Payment",
+                "search": "Search for Payment"
             },
-            "created": "Yeni Ödeme oluşturuldu {{ param }}",
-            "updated": "Ödeme güncellendi {{ param }}",
-            "deleted": "Ödeme silindi {{ param }}",
+            "created": "A new Payment is created with identifier {{ param }}",
+            "updated": "A Payment is updated with identifier {{ param }}",
+            "deleted": "A Payment is deleted with identifier {{ param }}",
             "delete": {
-                "question": "{{ id }} kayıtlı Ödeme silinecek. Emin misiniz??"
+                "question": "Are you sure you want to delete Payment {{ id }}?"
             },
             "detail": {
-                "title": "Ödeme"
+                "title": "Payment"
             },
-            "date": "Tarih",
-            "amount": "Tutar",
-            "paymentType": "Ödeme Tipi",
-            "customer": "Müşteri"
+            "date": "Date",
+            "amount": "Amount",
+            "paymentType": "Payment Type",
+            "customer": "Customer"
         }
     }
 }

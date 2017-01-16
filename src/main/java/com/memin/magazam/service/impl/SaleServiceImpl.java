@@ -3,6 +3,7 @@ package com.memin.magazam.service.impl;
 import com.memin.magazam.service.SaleService;
 import com.memin.magazam.domain.Sale;
 import com.memin.magazam.repository.SaleRepository;
+import com.memin.magazam.repository.search.SaleSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Sale.
@@ -25,6 +30,9 @@ public class SaleServiceImpl implements SaleService{
     @Inject
     private SaleRepository saleRepository;
 
+    @Inject
+    private SaleSearchRepository saleSearchRepository;
+
     /**
      * Save a sale.
      *
@@ -34,6 +42,7 @@ public class SaleServiceImpl implements SaleService{
     public Sale save(Sale sale) {
         log.debug("Request to save Sale : {}", sale);
         Sale result = saleRepository.save(sale);
+        saleSearchRepository.save(result);
         return result;
     }
 
@@ -71,5 +80,19 @@ public class SaleServiceImpl implements SaleService{
     public void delete(Long id) {
         log.debug("Request to delete Sale : {}", id);
         saleRepository.delete(id);
+        saleSearchRepository.delete(id);
+    }
+
+    /**
+     * Search for the sale corresponding to the query.
+     *
+     *  @param query the query of the search
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<Sale> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Sales for query {}", query);
+        Page<Sale> result = saleSearchRepository.search(queryStringQuery(query), pageable);
+        return result;
     }
 }

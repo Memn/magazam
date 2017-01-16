@@ -2,23 +2,27 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-many",
             "relationshipName": "customer",
             "otherEntityName": "customer",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
             "otherEntityRelationshipName": "shop"
         },
         {
-            "relationshipType": "one-to-many",
             "relationshipName": "sale",
             "otherEntityName": "sale",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "shop"
         },
         {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "user",
             "otherEntityName": "user",
-            "otherEntityField": "login"
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true
         }
     ],
     "fields": [
@@ -29,7 +33,7 @@
                 "required",
                 "minlength"
             ],
-            "fieldValidateRulesMinlength": 2
+            "fieldValidateRulesMinlength": "2"
         },
         {
             "fieldName": "address",
@@ -43,9 +47,9 @@
             ]
         }
     ],
-    "changelogDate": "20170117105005",
-    "entityTableName": "shop",
+    "changelogDate": "20170116135737",
     "dto": "no",
-    "pagination": "infinite-scroll",
-    "service": "serviceImpl"
+    "service": "serviceImpl",
+    "entityTableName": "shop",
+    "pagination": "infinite-scroll"
 }

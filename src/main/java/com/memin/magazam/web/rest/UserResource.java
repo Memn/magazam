@@ -4,6 +4,7 @@ import com.memin.magazam.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import com.memin.magazam.domain.User;
 import com.memin.magazam.repository.UserRepository;
+import com.memin.magazam.repository.search.UserSearchRepository;
 import com.memin.magazam.security.AuthoritiesConstants;
 import com.memin.magazam.service.MailService;
 import com.memin.magazam.service.UserService;
@@ -26,6 +27,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing users.
@@ -65,6 +69,9 @@ public class UserResource {
 
     @Inject
     private UserService userService;
+
+    @Inject
+    private UserSearchRepository userSearchRepository;
 
     /**
      * POST  /users  : Creates a new user.
@@ -180,5 +187,20 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
+    }
+
+    /**
+     * SEARCH  /_search/users/:query : search for the User corresponding
+     * to the query.
+     *
+     * @param query the query to search
+     * @return the result of the search
+     */
+    @GetMapping("/_search/users/{query}")
+    @Timed
+    public List<User> search(@PathVariable String query) {
+        return StreamSupport
+            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .collect(Collectors.toList());
     }
 }

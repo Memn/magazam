@@ -1,5 +1,6 @@
 package com.memin.magazam.domain;
 
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -15,6 +16,7 @@ import com.memin.magazam.domain.enumeration.PaymentType;
  */
 @Entity
 @Table(name = "payment")
+@Document(indexName = "payment")
 public class Payment implements Serializable {
 
     private static final long serialVersionUID = 1L;

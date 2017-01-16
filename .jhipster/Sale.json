@@ -2,17 +2,21 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "customer",
             "otherEntityName": "customer",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
             "otherEntityField": "name"
         },
         {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "shop",
             "otherEntityName": "shop",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
             "otherEntityField": "name"
         }
     ],
@@ -34,9 +38,9 @@
             "fieldValidateRulesMin": 0
         }
     ],
-    "changelogDate": "20170117105007",
-    "entityTableName": "sale",
+    "changelogDate": "20170116140518",
     "dto": "no",
-    "pagination": "infinite-scroll",
-    "service": "serviceImpl"
+    "service": "serviceImpl",
+    "entityTableName": "sale",
+    "pagination": "infinite-scroll"
 }

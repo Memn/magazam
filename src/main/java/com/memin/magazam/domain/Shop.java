@@ -1,6 +1,7 @@
 package com.memin.magazam.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -14,6 +15,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "shop")
+@Document(indexName = "shop")
 public class Shop implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,7 +36,7 @@ public class Shop implements Serializable {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "shop")
+    @ManyToMany(mappedBy = "shops")
     @JsonIgnore
     private Set<Customer> customers = new HashSet<>();
 
@@ -104,13 +106,13 @@ public class Shop implements Serializable {
 
     public Shop addCustomer(Customer customer) {
         customers.add(customer);
-        customer.setShop(this);
+        customer.getShops().add(this);
         return this;
     }
 
     public Shop removeCustomer(Customer customer) {
         customers.remove(customer);
-        customer.setShop(null);
+        customer.getShops().remove(this);
         return this;
     }
 
