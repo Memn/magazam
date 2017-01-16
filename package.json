@@ -61,7 +61,8 @@
     "node": "^4.3"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "postinstall": "bower install && grunt build"
   },
   "dependencies": {
     "bower": "^1.7.9",
