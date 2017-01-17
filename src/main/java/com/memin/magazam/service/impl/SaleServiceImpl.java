@@ -26,7 +26,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class SaleServiceImpl implements SaleService{
 
     private final Logger log = LoggerFactory.getLogger(SaleServiceImpl.class);
-    
+
     @Inject
     private SaleRepository saleRepository;
 
@@ -42,17 +42,17 @@ public class SaleServiceImpl implements SaleService{
     public Sale save(Sale sale) {
         log.debug("Request to save Sale : {}", sale);
         Sale result = saleRepository.save(sale);
-        saleSearchRepository.save(result);
+//        saleSearchRepository.save(result);
         return result;
     }
 
     /**
      *  Get all the sales.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Page<Sale> findAll(Pageable pageable) {
         log.debug("Request to get all Sales");
         Page<Sale> result = saleRepository.findAll(pageable);
@@ -65,7 +65,7 @@ public class SaleServiceImpl implements SaleService{
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Sale findOne(Long id) {
         log.debug("Request to get Sale : {}", id);
         Sale sale = saleRepository.findOne(id);
@@ -80,7 +80,7 @@ public class SaleServiceImpl implements SaleService{
     public void delete(Long id) {
         log.debug("Request to delete Sale : {}", id);
         saleRepository.delete(id);
-        saleSearchRepository.delete(id);
+//        saleSearchRepository.delete(id);
     }
 
     /**

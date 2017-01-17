@@ -26,7 +26,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class PaymentServiceImpl implements PaymentService{
 
     private final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
-    
+
     @Inject
     private PaymentRepository paymentRepository;
 
@@ -42,17 +42,17 @@ public class PaymentServiceImpl implements PaymentService{
     public Payment save(Payment payment) {
         log.debug("Request to save Payment : {}", payment);
         Payment result = paymentRepository.save(payment);
-        paymentSearchRepository.save(result);
+//        paymentSearchRepository.save(result);
         return result;
     }
 
     /**
      *  Get all the payments.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Page<Payment> findAll(Pageable pageable) {
         log.debug("Request to get all Payments");
         Page<Payment> result = paymentRepository.findAll(pageable);
@@ -65,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService{
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public Payment findOne(Long id) {
         log.debug("Request to get Payment : {}", id);
         Payment payment = paymentRepository.findOne(id);
@@ -80,7 +80,7 @@ public class PaymentServiceImpl implements PaymentService{
     public void delete(Long id) {
         log.debug("Request to delete Payment : {}", id);
         paymentRepository.delete(id);
-        paymentSearchRepository.delete(id);
+//        paymentSearchRepository.delete(id);
     }
 
     /**
