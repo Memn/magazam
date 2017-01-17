@@ -9,10 +9,8 @@
                 "main": "Varlıklar",
                 "shop": "Mağaza",
                 "customer": "Müşteri",
-                "sale": "Sale",
-                "payment": "Payment",
-                "shop": "Shop",
-                "customer": "Customer",
+                "sale": "Satış",
+                "payment": "Ödeme",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

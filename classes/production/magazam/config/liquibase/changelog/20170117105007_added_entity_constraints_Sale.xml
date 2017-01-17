@@ -4,13 +4,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the constraints for entity Customer.
+        Added the constraints for entity Sale.
     -->
-    <changeSet id="20170116140312-2" author="jhipster">
+    <changeSet id="20170117105007-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="customer_id"
+                                 baseTableName="sale"
+                                 constraintName="fk_sale_customer_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="customer"/>
+
         <addForeignKeyConstraint baseColumnNames="shop_id"
-                                 baseTableName="customer"
-                                 constraintName="fk_customer_shop_id"
+                                 baseTableName="sale"
+                                 constraintName="fk_sale_shop_id"
                                  referencedColumnNames="id"
                                  referencedTableName="shop"/>
 
