@@ -2,28 +2,28 @@
     "magazamApp": {
         "customer" : {
             "home": {
-                "title": "Customers",
-                "createLabel": "Create a new Customer",
-                "createOrEditLabel": "Create or edit a Customer",
-                "search": "Search for Customer"
+                "title": "Müşteriler",
+                "createLabel": "Müşteri Oluştur",
+                "createOrEditLabel": "Müşteri Oluştur veya Güncelle",
+                "search": "Müşterilerde Ara"
             },
-            "created": "A new Customer is created with identifier {{ param }}",
-            "updated": "A Customer is updated with identifier {{ param }}",
-            "deleted": "A Customer is deleted with identifier {{ param }}",
+            "created": "Yeni Müşteri oluşturuldu {{ param }}",
+            "updated": "Müşteri güncellendi {{ param }}",
+            "deleted": "Müşteri silindi {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Customer {{ id }}?"
+                "question": "{{ id }} kayıtlı Müşteri silinecek. Emin misiniz??"
             },
             "detail": {
-                "title": "Customer"
+                "title": "Müşteri"
             },
-            "name": "Name",
-            "phoneNumber": "Phone Number",
-            "address": "Address",
-            "remainingDebt": "Remaining Debt",
-            "creationDate": "Creation Date",
-            "sale": "Sale",
-            "payment": "Payment",
-            "shop": "Shop"
+            "name": "Adı",
+            "phoneNumber": "Telefon Numarası",
+            "address": "Adresi",
+            "remainingDebt": "Kalan Borç",
+            "creationDate": "Oluşturulma Tarihi",
+            "sale": "Satış",
+            "payment": "Ödeme",
+            "shop": "Mağaza"
         }
     }
 }
