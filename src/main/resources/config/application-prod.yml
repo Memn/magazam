@@ -39,8 +39,8 @@ spring:
             hibernate.generate_statistics: false
     data:
         elasticsearch:
-            cluster-name: elasticsearch
-            cluster-nodes: ${BONSAI_URL}:443
+            cluster-name:
+            cluster-nodes: localhost:443
     mail:
         host: localhost
         port: 25
