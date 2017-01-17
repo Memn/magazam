@@ -42,7 +42,7 @@ public class ShopServiceImpl implements ShopService{
     public Shop save(Shop shop) {
         log.debug("Request to save Shop : {}", shop);
         Shop result = shopRepository.save(shop);
-        shopSearchRepository.save(result);
+//        shopSearchRepository.save(result);
         return result;
     }
 
@@ -80,7 +80,7 @@ public class ShopServiceImpl implements ShopService{
     public void delete(Long id) {
         log.debug("Request to delete Shop : {}", id);
         shopRepository.delete(id);
-        shopSearchRepository.delete(id);
+//        shopSearchRepository.delete(id);
     }
 
     /**
