@@ -1,0 +1,48 @@
+// JDL definition for application 'magazam' generated with command 'yo jhipster:export-jdl'
+
+entity Shop (shop) {
+  name String required minlength(2),
+  address String,
+  phoneNumber String required
+}
+entity Customer (customer) {
+  name String required minlength(2),
+  phoneNumber String required,
+  address String,
+  remainingDebt BigDecimal,
+  creationDate ZonedDateTime
+}
+entity Sale (sale) {
+  date ZonedDateTime required,
+  amount BigDecimal required min(0)
+}
+entity Payment (payment) {
+  date ZonedDateTime required,
+  amount BigDecimal required min(0),
+  paymentType PaymentType required
+}
+
+enum PaymentType {
+  CASH,
+  CREDIT_CARD,
+  OTHER
+}
+
+relationship OneToMany {
+  Shop{customer} to Customer{shop(name) required},
+  Customer{sale} to Sale{customer(name) required},
+  Shop{sale} to Sale{shop(name) required},
+  Customer{payment} to Payment{customer(name) required}
+}
+relationship ManyToOne {
+  Shop{user(login) required} to User
+}
+
+paginate Shop with infinite-scroll
+service Shop with serviceImpl
+paginate Customer with infinite-scroll
+service Customer with serviceImpl
+paginate Sale with infinite-scroll
+service Sale with serviceImpl
+paginate Payment with infinite-scroll
+service Payment with serviceImpl
