@@ -40,7 +40,7 @@ spring:
     data:
         elasticsearch:
             cluster-name: elasticsearch
-            cluster-nodes: https://bgh4918m:m5wvsalz5aze4st8@banyan-8719285.eu-west-1.bonsaisearch.net:9300
+            cluster-nodes: ${BONSAI_URL}:9300
     mail:
         host: localhost
         port: 25
