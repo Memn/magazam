@@ -40,7 +40,7 @@ spring:
     data:
         elasticsearch:
             cluster-name: elasticsearch
-            cluster-nodes: ${BONSAI_URL}:9300
+            cluster-nodes: ${BONSAI_URL}:443
     mail:
         host: localhost
         port: 25
