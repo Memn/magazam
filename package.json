@@ -63,9 +63,5 @@
   "scripts": {
     "test": "gulp test",
     "postinstall": "bower install"
-  },
-  "dependencies": {
-    "bower": "^1.7.9",
-    "grunt-cli": "^1.2.0"
   }
 }
