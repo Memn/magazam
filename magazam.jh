@@ -14,11 +14,11 @@ entity Customer (customer) {
 }
 entity Sale (sale) {
   date ZonedDateTime required,
-  amount BigDecimal required min(0)
+  amount BigDecimal required min
 }
 entity Payment (payment) {
   date ZonedDateTime required,
-  amount BigDecimal required min(0),
+  amount BigDecimal required min,
   paymentType PaymentType required
 }
 
