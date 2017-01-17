@@ -7,10 +7,10 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Varlıklar",
-                "shop": "Mağaza",
-                "customer": "Müşteri",
-                "sale": "Satış",
-                "payment": "Ödeme",
+                "shop": "Shop",
+                "customer": "Customer",
+                "sale": "Sale",
+                "payment": "Payment",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -24,7 +24,7 @@
             },
             "admin": {
                 "main": "Yönetim",
-                "userManagement": "Kullanıcı Yönetimi",
+                "userManagement": "User management",
                 "tracker": "Kullanıcı Takip",
                 "metrics": "Ölçümler",
                 "health": "Heath",
