@@ -2,6 +2,8 @@ package com.memin.magazam.repository;
 
 import com.memin.magazam.domain.Shop;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
@@ -13,6 +15,6 @@ import java.util.List;
 public interface ShopRepository extends JpaRepository<Shop,Long> {
 
     @Query("select shop from Shop shop where shop.user.login = ?#{principal.username}")
-    List<Shop> findByUserIsCurrentUser();
+    Page<Shop> findByUserIsCurrentUser(Pageable pageable);
 
 }

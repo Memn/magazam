@@ -1,22 +1,21 @@
 package com.memin.magazam.service.impl;
 
-import com.memin.magazam.service.PaymentService;
 import com.memin.magazam.domain.Payment;
 import com.memin.magazam.repository.PaymentRepository;
 import com.memin.magazam.repository.search.PaymentSearchRepository;
+import com.memin.magazam.security.AuthoritiesConstants;
+import com.memin.magazam.security.SecurityUtils;
+import com.memin.magazam.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Payment.
@@ -55,7 +54,12 @@ public class PaymentServiceImpl implements PaymentService{
     @Transactional(readOnly = true)
     public Page<Payment> findAll(Pageable pageable) {
         log.debug("Request to get all Payments");
-        Page<Payment> result = paymentRepository.findAll(pageable);
+        Page<Payment> result;
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            result = paymentRepository.findAll(pageable);
+        } else {
+            result = paymentRepository.findByCustomerShopUserLogin(SecurityUtils.getCurrentUserLogin(),pageable);
+        }
         return result;
     }
 

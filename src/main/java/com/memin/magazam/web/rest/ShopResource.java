@@ -2,6 +2,7 @@ package com.memin.magazam.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.memin.magazam.domain.Shop;
+import com.memin.magazam.security.AuthoritiesConstants;
 import com.memin.magazam.service.ShopService;
 import com.memin.magazam.web.rest.util.HeaderUtil;
 import com.memin.magazam.web.rest.util.PaginationUtil;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -35,7 +37,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class ShopResource {
 
     private final Logger log = LoggerFactory.getLogger(ShopResource.class);
-        
+
     @Inject
     private ShopService shopService;
 
@@ -134,7 +136,7 @@ public class ShopResource {
      * SEARCH  /_search/shops?query=:query : search for the shop corresponding
      * to the query.
      *
-     * @param query the query of the shop search 
+     * @param query the query of the shop search
      * @param pageable the pagination information
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers

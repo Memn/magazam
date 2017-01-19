@@ -1,5 +1,7 @@
 package com.memin.magazam.service.impl;
 
+import com.memin.magazam.security.AuthoritiesConstants;
+import com.memin.magazam.security.SecurityUtils;
 import com.memin.magazam.service.SaleService;
 import com.memin.magazam.domain.Sale;
 import com.memin.magazam.repository.SaleRepository;
@@ -55,7 +57,12 @@ public class SaleServiceImpl implements SaleService{
     @Transactional(readOnly = true)
     public Page<Sale> findAll(Pageable pageable) {
         log.debug("Request to get all Sales");
-        Page<Sale> result = saleRepository.findAll(pageable);
+        Page<Sale> result;
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            result = saleRepository.findAll(pageable);
+        } else {
+            result = saleRepository.findByShopUserLogin(SecurityUtils.getCurrentUserLogin(),pageable);
+        }
         return result;
     }
 
